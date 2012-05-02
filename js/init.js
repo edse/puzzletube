@@ -6,7 +6,42 @@
  * @param {HTMLElement} element   Optional parameter specifying the element that visually bounds the entire animation.
  * @return {number} Animation frame request.
  */
+if (!window.requestAnimationFrame) {
+  window.requestAnimationFrame = (window.webkitRequestAnimationFrame ||
+                                  window.mozRequestAnimationFrame ||
+                                  window.msRequestAnimationFrame ||
+                                  window.oRequestAnimationFrame ||
+                                  function (callback) {
+                                    return window.setTimeout(callback, 17 /*~ 1000/60*/);
+                                  });
+}
 
+/**
+ * ERRATA: 'cancelRequestAnimationFrame' renamed to 'cancelAnimationFrame' to reflect an update to the W3C Animation-Timing Spec.
+ *
+ * Cancels an animation frame request.
+ * Checks for cross-browser support, falls back to clearTimeout.
+ * @param {number}  Animation frame request.
+ */
+if (!window.cancelAnimationFrame) {
+  window.cancelAnimationFrame = (window.cancelRequestAnimationFrame ||
+                                 window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame ||
+                                 window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame ||
+                                 window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame ||
+                                 window.oCancelAnimationFrame || window.oCancelRequestAnimationFrame ||
+                                 window.clearTimeout);
+}
+
+
+/**
+ * Normalize the browser animation API across implementations. This requests
+ * the browser to schedule a repaint of the window for the next animation frame.
+ * Checks for cross-browser support, and, failing to find it, falls back to setTimeout.
+ * @param {function}    callback  Function to call when it's time to update your animation for the next repaint.
+ * @param {HTMLElement} element   Optional parameter specifying the element that visually bounds the entire animation.
+ * @return {number} Animation frame request.
+ */
+/*
 // A robust polyfill for animation frame
 ( function() {
   var lastTime = 0;
@@ -19,7 +54,8 @@
     console.log('!window.requestAnimationFrame');
     window.requestAnimationFrame = function(callback, element) {
       var currTime = new Date().getTime();
-      var timeToCall = Math.max(0, 22 - (currTime - lastTime));
+      //var timeToCall = Math.max(0, 22 - (currTime - lastTime));
+      var timeToCall = 22;
       var id = window.setTimeout(function() { callback(currTime + timeToCall);
       }, timeToCall);
       lastTime = currTime + timeToCall;
@@ -32,7 +68,9 @@
     };
   }
 }());
+*/
 
+/*
 // A robust polyfill for fullscreen
 (function(window, document) {'use strict';
   var keyboardAllowed = 'ALLOW_KEYBOARD_INPUT' in Element, methods = (function() {
@@ -89,6 +127,7 @@
   });
   window.screenfull = screenfull;
 })(window, document);
+*/
 
 // GAME START
 var game = new Game();
@@ -166,7 +205,7 @@ window.m.autoSnapOff = function() {
 }
 
 function start() {
-  window.m.startGame();
+  return window.m.startGame();
 }
 function stop() {
   window.m.stopGame();
@@ -188,14 +227,15 @@ function loop() {
   if(elapsed > game.maxElapsedTime)
     game.maxElapsedTime = elapsed;
 
-  /*
   game.context.fillText("scale: " + game.scale, 50, 70);
   game.context.fillText("loaded items: " + game.loaded_items, 50, 80);
   game.context.fillText(">>> " + elapsed, 50, 90);
   game.context.fillText("maxElapsedTime>>> " + game.maxElapsedTime, 50, 100);
-  game.context.fillText(game.remaining_time, 50, 110);
-  game.context.fillText(game.auto_snap, 50, 120);
-  */
+  //game.context.fillText(game.remaining_time, 50, 110);
+  //game.context.fillText(game.auto_snap, 50, 120);
+  game.context.fillText(game.videoId, 50, 110);
+  game.context.fillText(game.piece_width, 50, 120);
+  game.context.fillText(game.piece_height, 50, 130);
 
 }
 
@@ -232,22 +272,27 @@ function loadAssets(g,assets) {
     else if(assets[i].type == "video"){
       //VIDEO
       eval("g."+assets[i].slug+' = document.createElement(\'video\');');
-      eval("g."+assets[i].slug+'.addEventListener(\'canplaythrough\', itemLoaded(g), false);');
       var source= document.createElement('source');
-      var vid= document.createElement('source');
+      //var vid= document.createElement('video');
       if(Modernizr.video.ogg){
-        source.type= 'video/ogg';
-        source.src= assets[i].src+'.ogg';
+        //source.type= 'video/ogg';
+        source.src= assets[i].src;
       }
       else if(Modernizr.video.h264){
         source.type= 'video/mp4';
-        source.src= assets[i].src+'.mp4';
+        source.src= assets[i].src;
       }
       if(source.src != ""){
         eval("g."+assets[i].slug+'.appendChild(source);');
-        eval("g."+assets[i].slug+'.appendChild(source);');
-        eval("vid.appendChild(g."+assets[i].slug+");");
-      }
+        eval("g."+assets[i].slug+'.id = "video";');
+        eval("g."+assets[i].slug+'.controls = true;');
+        eval("g."+assets[i].slug+'.addEventListener(\'canplaythrough\', itemLoaded(g), false);');
+        eval("document.getElementById('vid').appendChild(g."+assets[i].slug+');');
+        //eval("document.body.appendChild(g."+assets[i].slug+');');
+        //vid.appendChild(source);
+        //vid.controls = true;
+        //document.body.appendChild(vid);
+      } 
       else{
         // no MP3 or OGG audio support
         g.itens_to_load--;

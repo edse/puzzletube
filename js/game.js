@@ -21,37 +21,94 @@ Game.prototype.loadAssets = function() {
   this.maxElapsedTime = 0;
   this.start_time = 0;
   
-  this.assets = Array({
-      type: "video",
-      src: "video/BigBuckBunny_640x360",
-      slug: "video"
-    },{
-      type: "audio",
-      src: "audio/final/drip",
-      slug: "drip"
-    },{
-      type: "audio",
-      src: "audio/final/twang2",
-      slug: "twang"
-    },{
-      type: "audio",
-      src: "audio/final/chimes",
-      slug: "chimes"
+  
+  var src = null;
+
+  /*
+  //https://gdata.youtube.com/feeds/api/videos?v=2&alt=jsonc&q=music&category=Music&format=5&orderby=viewCount
+  //https://gdata.youtube.com/feeds/api/standardfeeds/most_popular?v=2&alt=jsonc
+  //https://gdata.youtube.com/feeds/api/users/disney/uploads?v=2&alt=jsonc
+  //https://gdata.youtube.com/feeds/api/videos?v=2&alt=jsonc&q=music&category=Music&format=6&orderby=viewCount
+  $.ajax({
+    url: "https://gdata.youtube.com/feeds/api/users/DisneyJuniorUK/uploads?v=2&alt=jsonc",
+    dataType: "json"
+  }).done(function(data) {
+    //alert('We are going to get a random video from a list of '+total+' videos from Disney');
+    var total = data.data.items.length;
+    //var id = data.feed.entry[0].id.$t.slice(data.feed.entry[0].id.$t.indexOf('video:') + 6);
+    //var i = Math.round(Math.floor((Math.random()*10)));
+    var i = Math.round(Math.random()*total);  
+    console.log('items: '+total+', sorted:'+i)  
+    //alert('i:'+i);
+    //alert(i);
+    var id = data.data.items[i].id;
+    alert(id);
+  */
+  
+  var videos = Array("P0-MnVHHN6k","8MqgzPRmf8M","RxEob-v8rIw","WvqmAkbQvGU","9b6puXlbB6Y","cv4hPHQb8q4","GtUD2pv4vu4","zEIW473JXSg","7F6utRdt7no","hGoGyDtxkXM","xwULagPK-L4","nOOVb6hctM4","8cUKTiorb6w","6umzWF8pbL8","zMcOyuBeus8","csiZSFPvKlg","yQ-dU1LI4Fs","GMAILkCK7p4","dJ4Nnr0MXKY","IkVUfTOBHlE","37C_ool9gtM");
+  var total = videos.length;
+  var i = Math.round(Math.random()*total);
+  var id = videos[i];
+  id = "GtUD2pv4vu4";
+  
+  this.videoId = id;
+  
+  $.ajax({
+    url: "http://www.youtube.com/get_video_info?video_id="+id,
+    dataType: "text"
+  }).done(function(data) {
+    data = data.replace('url%3D', '');
+    data = decodeURIComponent((data+'').replace(/\+/g, '%20'));
+    var vars = [], hash;
+    var hashes = data.slice(data.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++){
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = unescape(hash[1]);
     }
-  );
-  
-  this.items_to_load = this.assets.length;
-  loadAssets(this, this.assets);
-  
-  console.log(this.loaded_items+' assets loaded');
-  
-  this.video = document.getElementById("video");
-  //this.video.play();
+    src = vars["url_encoded_fmt_stream_map"];
+    if(typeof(src) == "undefined"){
+      if(Modernizr.video.ogg)
+        src = "video/BigBuckBunny_640x360.ogv";
+      else if(Modernizr.video.h264)
+        src = "video/BigBuckBunny_640x360.mp4";
+    }else if(!Modernizr.video.ogg && Modernizr.video.h264){
+      src = "video/BigBuckBunny_640x360.mp4";
+    }
+    
+    alert(src);
+
+    game.assets = Array({
+        type: "video",
+        src: src,
+        slug: "video"
+      },{
+        type: "audio",
+        src: "audio/final/drip",
+        slug: "drip"
+      },{
+        type: "audio",
+        src: "audio/final/twang2",
+        slug: "twang"
+      },{
+        type: "audio",
+        src: "audio/final/chimes",
+        slug: "chimes"
+      }
+    );
+    
+    game.items_to_load = game.assets.length;
+    loadAssets(game, game.assets);
+
+    console.log(game.loaded_items+' assets loaded');
+    
+  });
 
 }
 
 Game.prototype.init = function(){
   //IMAGE SIZE
+  /*
   if((window.innerHeight <= 80)||(window.innerWidth <= 230)){
     this.context.scale(0.05,0.05);
     this.scale = 0.05;
@@ -74,6 +131,25 @@ Game.prototype.init = function(){
     this.context.scale(1,1);
     this.scale = 1;
   }
+  */
+ 
+  if(window.innerWidth<this.video.videoWidth+100)
+    s = window.innerWidth/this.video.videoWidth
+  else
+    s = window.innerHeight/window.innerWidth*1.75;
+  
+  s = 1;
+  //y = window.innerHeight*1.2/this.video.videoHeight
+  
+  //x = this.video.videoWidth/(this.video.videoWidth*/window.innerWidth);
+  //y = this.video.videoHeight/(this.video.videoHeight*150/yy);
+  
+  //alert(s);
+  //var s = Math.min(x,y);
+  alert(s);
+  this.context.scale(s,s);
+  this.scale = s;
+
   console.log('scale: '+this.scale)
   
   this.loaded = true;
@@ -85,14 +161,15 @@ Game.prototype.init = function(){
   this.over = null;
   this.is_over = false;
 
-  console.log(this.video.videoWidth+','+this.video.videoHeight)
-  this.img_width = this.video.videoWidth;
-  this.img_height = this.video.videoHeight;
+  console.log('size: '+this.video.videoWidth*this.scale+','+this.video.videoHeight*this.scale);
+  
+  this.img_width = this.video.videoWidth*this.scale;
+  this.img_height = this.video.videoHeight*this.scale;
   this.num_pieces = this.num_lines * this.num_lines;
   this.piece_width = this.img_width / this.num_lines;
   this.piece_height = this.img_height / this.num_lines;
 
-  this.remaining_time = this.num_pieces*3;
+  this.remaining_time = this.num_pieces*30;
   this.clock_interval = null;
   this.mouse = new Mouse(this);
 
@@ -291,7 +368,7 @@ Game.prototype.draw_bg = function() {
   var offsety = (this.canvas.height/this.scale)/2-(this.img_height)/2;
   offsety += 40;
   this.context.globalAlpha = 0.2;
-  this.context.drawImage(this.video, offsetx, offsety, this.video.videoWidth, this.video.videoHeight);
+  this.context.drawImage(this.video, offsetx, offsety, this.img_width, this.img_height);
   //this.context.drawImage(this.img2, offsetx+this.img_width, offsety, 200, 200);
   
   this.context.restore();
