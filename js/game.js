@@ -438,6 +438,13 @@ Game.prototype.getTimer = function() {
   return (new Date().getTime() - this.start_time); //milliseconds
 }
 
+Game.prototype.nextStage = function() {
+  this.is_over = false;
+  this.num_lines++;
+  this.init();
+  window.m.startGame();
+}
+
 /*
 Game.prototype.loop = function(){
   var instance = this;
