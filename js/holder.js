@@ -33,6 +33,7 @@ function Holder(id, game, x, y, line, column, moveble) {
 }
 
 Holder.prototype.draw = function() {
+  /*
   this.game.context.save();
   this.game.context.globalAlpha = 0.15
   this.game.context.fillStyle = "rgba(255, 255, 255, 0.5)";
@@ -43,4 +44,7 @@ Holder.prototype.draw = function() {
   //this.game.context.fillText(this.id, this.x-3, this.y+3);
   this.game.context.closePath();
   this.game.context.restore();
+  */
+  this.game.context.lineWidth = 1;
+  this.game.context.strokeRect(this.x-this.game.piece_width/2,this.y-this.game.piece_height/2,this.game.piece_width,this.game.piece_height);
 }

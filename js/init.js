@@ -216,8 +216,8 @@ function pause() {
 
 function loop() {
   game.interval = window.requestAnimationFrame(loop, game.canvas);
-  game.canvas.width = game.canvas.width;
-  game.context.scale(game.scale, game.scale);
+  //game.canvas.width = game.canvas.width;
+  //game.context.scale(game.scale, game.scale);
   game.render();
 
   var elapsed = game.getTimer() - game.time;
@@ -227,6 +227,9 @@ function loop() {
   if(elapsed > game.maxElapsedTime)
     game.maxElapsedTime = elapsed;
 
+  game.context.textAlign = 'left';
+  game.context.fillStyle = "rgba(255, 255, 255, 1)";
+  game.context.font = "bold 12px Arial";
   game.context.fillText("scale: " + game.scale, 50, 70);
   game.context.fillText("loaded items: " + game.loaded_items, 50, 80);
   game.context.fillText(">>> " + elapsed, 50, 90);
@@ -306,15 +309,11 @@ function itemLoaded(g) {
 }
 
 function resizeGame() {
-  document.getElementById('canvas').width = window.innerWidth;
-  document.getElementById('canvas').height = window.innerHeight;
-  console.log("canvas: " + window.innerWidth + ", " + window.innerHeight)
-  if(game.started)
+  if(game.started){
+    game.resized = true;
     game.init();
-  else
-    game.draw_splash();
+  }
 }
 
 window.addEventListener('resize', resizeGame, false);
 window.addEventListener('orientationchange', resizeGame, false);
-window.addEventListener('load', game.draw_splash(), false);

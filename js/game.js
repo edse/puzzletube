@@ -1,6 +1,11 @@
 function Game(canvas) {
   this.started = false;
   this.num_lines = 2;
+  this.scale = 1;
+  this.alpha = 1;
+  this.fade1 = 0;
+  this.fade2 = 0;
+  this.resized = true;
   console.log('start loading...')
   this.loadAssets();
 }
@@ -15,12 +20,15 @@ Game.prototype.loadAssets = function() {
   console.log("canvas: "+window.innerWidth+", "+window.innerHeight)
   //
 
+  this.font_size = Math.round(this.canvas.width/8);
+  this.scaled_width = (this.canvas.width/this.scale)/2;
+  this.scaled_height = (this.canvas.height/this.scale)/2;
+
   this.loaded_items = 0;
   this.loaded = false;
   this.interval = null;
   this.maxElapsedTime = 0;
   this.start_time = 0;
-  
   
   var src = null;
 
@@ -49,7 +57,13 @@ Game.prototype.loadAssets = function() {
   var total = videos.length;
   var i = Math.round(Math.random()*total);
   var id = videos[i];
-  id = "GtUD2pv4vu4";
+  //id = "GtUD2pv4vu4";
+  //id = "Zb9KnXNYCiQ";
+  //id = "SyrO83x7g-E";
+  //id = "Ymwe4DB_HsU";
+  //id = "-3y-6LDArp0";
+  //id = "RxEob-v8rIw";
+  id = "zEIW473JXSg";
   
   this.videoId = id;
   
@@ -76,7 +90,7 @@ Game.prototype.loadAssets = function() {
       src = "video/BigBuckBunny_640x360.mp4";
     }
     
-    alert(src);
+    console.log('Video src: '+src);
 
     game.assets = Array({
         type: "video",
@@ -107,6 +121,7 @@ Game.prototype.loadAssets = function() {
 }
 
 Game.prototype.init = function(){
+  this.video.pause();
   //IMAGE SIZE
   /*
   if((window.innerHeight <= 80)||(window.innerWidth <= 230)){
@@ -132,26 +147,7 @@ Game.prototype.init = function(){
     this.scale = 1;
   }
   */
- 
-  if(window.innerWidth<this.video.videoWidth+100)
-    s = window.innerWidth/this.video.videoWidth
-  else
-    s = window.innerHeight/window.innerWidth*1.75;
-  
-  s = 1;
-  //y = window.innerHeight*1.2/this.video.videoHeight
-  
-  //x = this.video.videoWidth/(this.video.videoWidth*/window.innerWidth);
-  //y = this.video.videoHeight/(this.video.videoHeight*150/yy);
-  
-  //alert(s);
-  //var s = Math.min(x,y);
-  alert(s);
-  this.context.scale(s,s);
-  this.scale = s;
 
-  console.log('scale: '+this.scale)
-  
   this.loaded = true;
   this.pieces = new Array();
   this.holders = new Array();
@@ -161,13 +157,28 @@ Game.prototype.init = function(){
   this.over = null;
   this.is_over = false;
 
-  console.log('size: '+this.video.videoWidth*this.scale+','+this.video.videoHeight*this.scale);
-  
-  this.img_width = this.video.videoWidth*this.scale;
-  this.img_height = this.video.videoHeight*this.scale;
+  this.img_width = this.video.videoWidth;
+  this.img_height = this.video.videoHeight;
   this.num_pieces = this.num_lines * this.num_lines;
   this.piece_width = this.img_width / this.num_lines;
   this.piece_height = this.img_height / this.num_lines;
+  console.log('size: '+this.img_width+','+this.img_height);
+
+  if(this.resized)
+    this.apply_scale();
+  
+  //y = window.innerHeight*1.2/this.video.videoHeight
+  
+  //x = this.video.videoWidth/(this.video.videoWidth*/window.innerWidth);
+  //y = this.video.videoHeight/(this.video.videoHeight*150/yy);
+  
+  //alert(s);
+  //var s = Math.min(x,y);
+  //alert(s);
+  //this.context.scale(s,s);
+  //this.scale = s;
+
+  console.log('scale: '+this.scale)
 
   this.remaining_time = this.num_pieces*30;
   this.clock_interval = null;
@@ -177,6 +188,8 @@ Game.prototype.init = function(){
 
   this.placeHolders();
   this.placePieces();
+  
+  this.video.play();
 }
 
 Game.prototype.placePieces = function(){
@@ -240,7 +253,7 @@ Game.prototype.render = function() {
   if(!this.loaded){
     if((this.items_to_load > 0)&&(this.loaded_items == this.items_to_load)){
       this.items_to_load = 0;
-      var t = setTimeout("game.init();", 3000);
+      var t = setTimeout("game.init();", 1500);
       //this.init();
     }else{
       this.draw_loading();
@@ -352,119 +365,70 @@ Game.prototype.render = function() {
 }
 
 Game.prototype.draw_bg = function() {
-  this.context.save();
-
-  //bg
-  if(!this.scale)
-    this.scale = 1;
-  var grd = this.context.createRadialGradient((this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2, 0, (this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2, this.canvas.width/this.scale);
-  grd.addColorStop(0, "rgb(225, 225, 225)");
-  grd.addColorStop(1, "rgb(0, 0, 0)");
-  this.context.fillStyle = grd;    
+  if(!this.scale) this.scale = 1;
+  this.context.fillStyle = "rgba(125, 125, 125, 1)";
   this.context.fillRect(0,0,this.canvas.width/this.scale,this.canvas.height/this.scale);
-
   //puzzle images
   var offsetx = (this.canvas.width/this.scale)/2-(this.img_width)/2;
   var offsety = (this.canvas.height/this.scale)/2-(this.img_height)/2;
   offsety += 40;
   this.context.globalAlpha = 0.2;
   this.context.drawImage(this.video, offsetx, offsety, this.img_width, this.img_height);
-  //this.context.drawImage(this.img2, offsetx+this.img_width, offsety, 200, 200);
-  
-  this.context.restore();
-}
-
-Game.prototype.draw_splash = function() {
-  console.log('asdf');
-  this.context.save();
-
-  //bg  
-  var grd = this.context.createRadialGradient(this.canvas.width/2, this.canvas.height/2, 0, this.canvas.width/2, this.canvas.height/2, this.canvas.height);
-  //grd.addColorStop(0, "#8ED6FF"); // light blue
-  grd.addColorStop(0, "#CCC");
-  //grd.addColorStop(1, "#004CB3"); // dark blue
-  grd.addColorStop(1, "#666");
-  this.context.fillStyle = grd;    
-  this.context.fillRect(0,0,this.canvas.width,this.canvas.height);
-
-  //btn
-  //this.context.globalAlpha = 0.7
-  //this.context.drawImage(this.btn_play, this.canvas.width/2-this.btn_play.width/2, 300);
-
-  //txt
-  this.context.fillStyle = "rgba(255, 255, 255, 0.7)";
-  //this.context.fillStyle = '#FFF';
-  this.context.font = "bold "+Math.round(this.canvas.width/8)+"px Arial";
-  this.context.textBaseline = 'bottom';
-  this.context.textAlign = 'center';
-
-  this.context.shadowColor = "#000"
-  this.context.shadowOffsetX = 5;
-  this.context.shadowOffsetY = 5;
-  this.context.shadowBlur = 25;
-  this.context.lineWidth = 5;
-
-  this.context.strokeText("HTML5 PUZZLE", this.canvas.width/2, this.canvas.height/2);
-  this.context.fillText("HTML5 PUZZLE", this.canvas.width/2, this.canvas.height/2);
-
-  this.context.restore();
-  
-  //this.draw_menu();
 }
 
 Game.prototype.draw_remaining = function() {
-  this.context.save();    
-  this.context.fillStyle = "rgba(255, 255, 255, 0.5)";
-  this.context.strokeStyle = 'rgba(0, 0, 0, 0.4)';
-  this.context.font = "bold "+Math.round(this.canvas.width/8)+"px Arial";
+  this.fade1 = this.fade1+(0.010*this.alpha);
+  if(this.fade1 >= 0.6)
+    this.alpha = -1;
+  else if(this.fade1 <= 0.2)
+    this.alpha = 1;
+  this.context.fillStyle = "rgba(255, 255, 255, "+this.fade1+")";
+  this.context.strokeStyle = "rgba(0, 0, 0, 0.5)";
+  this.context.lineWidth = 2;
+  this.context.font = "bold "+this.font_size+"px Arial";
   this.context.textBaseline = 'middle';
   this.context.textAlign = 'center';
-  this.context.shadowColor = "#000"
-  this.context.shadowOffsetX = 5;
-  this.context.shadowOffsetY = 5;
-  this.context.shadowBlur = 25;
-  this.context.lineWidth = 5;
-  this.context.strokeText(game.remaining_time, (this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2);
-  this.context.fillText(game.remaining_time, (this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2);
-  this.context.restore();
+  this.context.fillText(game.remaining_time, this.scaled_width, this.scaled_height);
 }
 
 Game.prototype.draw_loading = function() {
-  this.context.save();    
-  this.context.fillStyle = "rgba(255, 255, 255, 0.8)";
-  this.context.strokeStyle = 'rgba(0, 0, 0, 0.6)';
-  this.context.font = "bold "+Math.round(this.canvas.width/8)+"px Arial";
+  this.fade1 = this.fade1+0.025;
+  if(this.fade1 >= 1)
+    this.fade1 = 0;
+  this.fade2 = 1-this.fade1;
+  
+  this.context.fillStyle = "rgba(255, 255, 255, "+this.fade2+")";
+  this.context.strokeStyle = "rgba(255, 255, 255, "+this.fade1+")";
+  this.context.font = "bold "+this.font_size+"px Arial";
   this.context.textBaseline = 'middle';
   this.context.textAlign = 'center';
-  this.context.shadowColor = "#000"
-  this.context.shadowOffsetX = 5;
-  this.context.shadowOffsetY = 5;
-  this.context.shadowBlur = 25;
   this.context.lineWidth = 5;
-  this.context.strokeText("LOADING", (this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2);
-  this.context.fillText("LOADING", (this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2);
-  this.context.restore();
-  //this.context.fillText("loading...", 50, 60);
-}
-Game.prototype.draw_gameover = function() {
-  this.context.save();    
-  this.context.fillStyle = "rgba(255, 255, 255, 0.8)";
-  this.context.strokeStyle = 'rgba(0, 0, 0, 0.6)';
-  this.context.font = "bold "+Math.round(this.canvas.width/8)+"px Arial";
-  this.context.textBaseline = 'middle';
-  this.context.textAlign = 'center';
-  this.context.shadowColor = "#000"
-  this.context.shadowOffsetX = 5;
-  this.context.shadowOffsetY = 5;
-  this.context.shadowBlur = 25;
-  this.context.lineWidth = 5;
-  this.context.strokeText("TIME UP", (this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2);
-  this.context.fillText("TIME UP", (this.canvas.width/this.scale)/2, (this.canvas.height/this.scale)/2);
-  this.context.restore();
-  //this.context.fillText("gameover", 50, 60);
+  this.context.strokeText("LOADING", this.scaled_width, this.scaled_height);
+  this.context.fillText("LOADING", this.scaled_width, this.scaled_height);
+  //console.log('loading...');
 }
 
 ////////////////////////////////////////
+
+Game.prototype.apply_scale = function(){  
+  document.getElementById('canvas').width = window.innerWidth;
+  document.getElementById('canvas').height = window.innerHeight;
+  console.log("window: " + window.innerWidth + ", " + window.innerHeight + " | video: "+this.img_width+", "+this.img_height);
+  
+  if(window.innerWidth <= this.img_width + (this.piece_width/2)){
+    var w = ((this.img_width + (this.piece_width)) + this.canvas.width)/2;
+    this.scale = this.canvas.width/w;
+  }
+  else if(window.innerHeight <= this.img_height + (this.piece_height/2)){
+    var h = ((this.img_height + (this.piece_height*1.5))+160 + this.canvas.height)/2;
+    this.scale = this.canvas.height/h;
+  }else{
+    this.scale = 1;
+  }
+  this.context.scale(this.scale,this.scale);
+  console.log('scale: '+this.scale);  
+  this.resized = false;
+}
 
 Game.prototype.clockTick = function() {
   this.remaining_time--;
