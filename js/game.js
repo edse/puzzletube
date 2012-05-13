@@ -6,6 +6,8 @@ function Game(canvas) {
   this.fade1 = 0;
   this.fade2 = 0;
   this.resized = true;
+  this.start_time = 0;
+  this.stage = 1;
   console.log('start loading...')
   this.loadAssets();
 }
@@ -51,7 +53,6 @@ Game.prototype.loadAssets = function() {
     //alert(i);
     var id = data.data.items[i].id;
     alert(id);
-  */
   
   var videos = Array("P0-MnVHHN6k","8MqgzPRmf8M","RxEob-v8rIw","WvqmAkbQvGU","9b6puXlbB6Y","cv4hPHQb8q4","GtUD2pv4vu4","zEIW473JXSg","7F6utRdt7no","hGoGyDtxkXM","xwULagPK-L4","nOOVb6hctM4","8cUKTiorb6w","6umzWF8pbL8","zMcOyuBeus8","csiZSFPvKlg","yQ-dU1LI4Fs","GMAILkCK7p4","dJ4Nnr0MXKY","IkVUfTOBHlE","37C_ool9gtM");
   var total = videos.length;
@@ -89,10 +90,18 @@ Game.prototype.loadAssets = function() {
     }else if(!Modernizr.video.ogg && Modernizr.video.h264){
       src = "video/BigBuckBunny_640x360.mp4";
     }
-    
+  */
+
+    if(Modernizr.video.ogg)
+      src = "video/BigBuckBunny_640x360.ogv";
+    else if(Modernizr.video.h264)
+      src = "video/BigBuckBunny_640x360.mp4";
+    else if(!Modernizr.video.ogg && Modernizr.video.h264)
+      src = "video/BigBuckBunny_640x360.mp4";
+
     console.log('Video src: '+src);
 
-    game.assets = Array({
+    this.assets = Array({
         type: "video",
         src: src,
         slug: "video"
@@ -111,12 +120,12 @@ Game.prototype.loadAssets = function() {
       }
     );
     
-    game.items_to_load = game.assets.length;
-    loadAssets(game, game.assets);
+    this.items_to_load = this.assets.length;
+    loadAssets(this, this.assets);
 
-    console.log(game.loaded_items+' assets loaded');
-    
-  });
+    console.log(this.loaded_items+' assets loaded');
+
+  //});
 
 }
 
@@ -180,7 +189,8 @@ Game.prototype.init = function(){
 
   console.log('scale: '+this.scale)
 
-  this.remaining_time = this.num_pieces*30;
+  this.remaining_time = this.num_pieces*(10/this.stage);
+  this.time_to_complete = this.remaining_time;
   this.clock_interval = null;
   this.mouse = new Mouse(this);
 
@@ -318,12 +328,17 @@ Game.prototype.render = function() {
     else{
       if(this.is_over){
         window.m.pauseGame();
+        $('#stage').html("Stage "+this.stage+" completed!");
+        $('#pieces').html(this.num_lines*this.num_lines+" pieces in "+(this.time_to_complete-this.remaining_time)+"s");
+        $('#modal-success').modal();
+        /*
         if(confirm('Yes, you did it! Try the next level')){
           this.is_over = false;
           this.num_lines++;
           this.init();
           window.m.startGame();
         }
+        */
       }else{
         if(this.num_pieces == this.placed_pieces.length){
           this.is_over = true;
@@ -440,6 +455,7 @@ Game.prototype.getTimer = function() {
 
 Game.prototype.nextStage = function() {
   this.is_over = false;
+  this.stage++;
   this.num_lines++;
   this.init();
   window.m.startGame();

@@ -317,3 +317,11 @@ function resizeGame() {
 
 window.addEventListener('resize', resizeGame, false);
 window.addEventListener('orientationchange', resizeGame, false);
+//
+
+$(function() {
+  $("#next").click(function() {
+    game.nextStage();
+    $('#modal-success').modal('hide');
+  });
+});
