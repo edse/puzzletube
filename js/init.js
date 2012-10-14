@@ -160,6 +160,7 @@ window.m.stopGame = function() {
 
 }
 window.m.startGame = function() {
+  $('html, body').animate({ scrollTop: 0 }, 'fast');
   game.video.play();
   gameInterval = setInterval(function() { game.remaining_time--; },1000);
   game.started = true;
