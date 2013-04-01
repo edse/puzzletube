@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<head>
+<title>Playing YouTube video on HTML5 canvas</title>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width" />
+<style type="text/css">
+  html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+  }
+  #canvas {
+    padding: 0px;
+    margin: 0px;
+    top:0;
+    left:0;
+    z-index: 30;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+</head>
+<body>
+  
+  <div style="display: none;">
+    <video id="video" autoplay="true" loop="true">
+      <source src="./video/BigBuckBunny_640x360.ogv" type="video/ogg" />
+      <source src="./video/BigBuckBunny_640x360.mp4" type="video/mp4" />
+    </video>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var v = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+  
+    //var cw = Math.floor(canvas.clientWidth / 100);
+    //var ch = Math.floor(canvas.clientHeight / 100);
+    var cw = Math.floor(canvas.clientWidth);
+    var ch = Math.floor(canvas.clientHeight);
+    canvas.width = cw;
+    canvas.height = ch;
+  
+    v.addEventListener('play', function(){
+      draw(this,context,cw,ch);
+    },false);
+    
+  },false);
+
+  function draw(v,c,w,h) {
+    if(v.paused || v.ended) return false;
+    c.drawImage(v,0,0,w,h);
+    setTimeout(draw,20,v,c,w,h);
+  }
+  </script>
+
+</body>
+</html>

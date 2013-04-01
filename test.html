@@ -9,13 +9,15 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>HTML5 Video Puzzle - Puzzle game that features videos rather than static images</title>
-  <meta name="title" content="HTML5 Video Puzzle - Puzzle game that features videos rather than static images" />
-  <meta name="description" content="HTML5 Video Puzzle - Puzzle game that features videos rather than static images" />
-  <meta name="keywords" content="HTML5, canvas, animation, requestanimationframe, fullscreen, fullscreen api, cache, application cache, application cache api, appcache, audio, audio api, video, video api, modernizr, html5, css3" />
+  <title>HTML5 Video Puzzle - learning the new HTML5 technologies</title>
+  <meta name="title" content="HTML5 Video Puzzle - learning the new HTML5 technologies" />
+  <meta name="description" content="This is a learning tool for the new HTML5 technologies" />
+  <meta name="keywords" content="html, css, html5, css3, canvas, animation, requestanimationframe, fullscreen, fullscreen api, cache, application cache, application cache api, appcache, audio, audio api, video, video api, modernizr" />
   <meta name="author" content="Emerson Estrella">
   <link type="text/plain" rel="author" href="humans.txt" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
   <style type="text/css">
     body {
       padding-top: 60px;
@@ -46,7 +48,7 @@
           <a class="brand" href="./">HTML5 Video Puzzle</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li id="home" class="active"><a href="./">Home</a></li>
+              <li id="home" class="active"><a href="./">Home</a></li><!--
               <li id="play"><a href="javascript: start();">Play</a></li>
               <li id="pause" class="control"><a href="javascript: pause();">Pause</a></li>
               <li id="autosnap" class="control"><a href="javascript: window.m.autoSnap();">Auto-Snap On</a></li>
@@ -54,7 +56,7 @@
               <li id="fullscreen" class="control"><a href="javascript: screenfull.toggle();">Fullscreen</a></li>
               <li id="exitfullscreen" class="control"><a href="javascript: screenfull.toggle();">Exit Fullscreen</a></li>
               <li id="sfx" class="control"><a href="javascript: window.m.startSFX();">SFX On</a></li>
-              <li id="sfxoff" class="control"><a href="javascript: window.m.stopSFX();">SFX Off</a></li>
+              <li id="sfxoff" class="control"><a href="javascript: window.m.stopSFX();">SFX Off</a></li>-->
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -69,16 +71,25 @@
       <div class="modal-body">
         <p><span id="stage" class="label label-success">Stage 1 completed!</span></p>
         <p><span id="pieces" class="label label-warning">4 pieces in 30s</span></p>
+        <!--
+        <h4>Popover in a modal</h4>
+        <p>This <a href="#" class="btn popover-test" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">button</a> should trigger a popover on hover.</p>
+        <h4>Tooltips in a modal</h4>
+        <p><a href="#" class="tooltip-test" data-original-title="Tooltip">This link</a> and <a href="#" class="tooltip-test" data-original-title="Tooltip">that link</a> should have tooltips on hover.</p>
+        -->
         <hr />
       </div>
       <div class="modal-footer">
+        <!--<a href="#" class="btn" data-dismiss="modal">No thanks</a>-->
         <a href="#" class="btn btn-primary" id="next">Next Stage</a>
       </div>
     </div>
 
     <div class="container-fluid bg">
       <div class="row-fluid">
+
         <div class="span3">
+                    
           <div class="hidden-phone" style="text-align: center; margin-bottom: 20px">
             <script type="text/javascript">
             if(window.innerWidth > 480) {
@@ -95,6 +106,7 @@
           
         </div><!--/span-->
         <div class="span9">
+
           <div class="visible-desktop row-fluid show-grid">
             <div class="span12" style="text-align: center; margin-bottom: 20px">
             <script type="text/javascript">
@@ -128,17 +140,21 @@
           </div>
           
           <div class="hero-unit" style="padding-bottom: 15px;">
+
             <div id="promo" class="alert alert-block alert-message fade in span2" style="float: right">
               <button class="close" data-dismiss="alert">×</button>
               <h4 class="alert-heading">Check this out!</h4>
-              <p>HTML5 version of the game the preschool kids love.</p>
+              <p>HTML5 Video Puzzle. The same puzzle game, but using <strong>YouTube videos</strong> intead still images.</p>
               <p>
-                <a class="btn btn-small btn-info" href="http://shapepuzzle.appspot.com"><i class="icon-info-sign icon-white"></i> HTML5 Shape Puzzle</a>
+                <a class="btn btn-small btn-info" href="http://html5videopuzzle.appspot.com"><i class="icon-info-sign icon-white"></i> HTML5 VIDEO PUZZLE</a> <!--<a class="btn" href="#">No, thanks</a>-->
               </p>
             </div>
 
+            <div id="vid" style="display: block;"></div>
+            
             <h1 class="brand">HTML5 Video Puzzle</h1>
-            <h2>Learning and having fun</h2>
+            <h2>Building a game for learning HTML5</h2>
+            <h3>HTML5 Learning Features in this game:</h3>
             <ul>
               <li>Canvas</li>
               <li>Image manipulation</li>
@@ -148,6 +164,19 @@
               <li>Audio API</li>
               <li>Mouse, keyboard, and touch support</li>
             </ul>
+
+            <h3>Game Concept:</h3>
+            <ul>
+              <li>The player has to place all pieces in the given time</li>
+              <li>There are infinite stages</li>
+              <li>Every new stage the number of pieces and the time to accomplish increases</li>
+            </ul>
+
+            <!--
+            <div class="alert" style="opacity: 0.7">
+              <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+            </div>
+            -->
             
             <p><a href="javascript: start();" class="btn btn-danger btn-large" style="font-size: 40px; margin-bottom: 25px; margin-top: 25px;">Play Now &raquo;</a></p>
             
@@ -172,17 +201,17 @@
           <div class="row-fluid">
             <div class="span4">
               <h2>Canvas, image manipulation, and RequestAnimationFrame</h2>
-              <p>RequestAnimationFrame provide power efficient and smooth animations.</p>
+              <p>The game runs on canvas. It loads an image and slice it in a few pieces. The RequestAnimationFrame provide power efficient and smooth animations.</p>
               <p><a class="btn" href="http://coding-everyday.blogspot.com.br/2012/04/html5-polyfills-fullscreen.html">View details &raquo;</a></p>
             </div><!--/span-->
             <div class="span4">
               <h2>Audio, and fullscreen APIs</h2>
-              <p>Background music, sound effects, and fullscreen</p>
+              <p>Background music and sound effects using the Audio API. Also fullscreen mode support.</p>
               <p><a class="btn" href="http://coding-everyday.blogspot.com.br/2012/04/html5-appcache-api-how-to-prevent.html">View details &raquo;</a></p>
             </div><!--/span-->
             <div class="span4">
-              <h2>Offline browsing support with AppCache API</h2>
-              <p>You can keep playing when you go offline.</p>
+              <h2>Application Cache / Offline browsing support</h2>
+              <p>You can keep playing even when you go offline.</p>
               <p><a class="btn" href="http://coding-everyday.blogspot.com.br/2012/04/html5-appcache-api-how-to-prevent.html">View details &raquo;</a></p>
             </div><!--/span-->
           </div><!--/row-->
@@ -190,8 +219,8 @@
           <div class="row-fluid" style="margin-top: 25px;">
             <div class="span12">
               <h2>Want to know how to build a HTML5 game like this?</h2>
-              <p>Check out the tutorial: Creating a HTML5 puzzle game</p>
-              <p><a class="btn btn-large btn-primary" href="http://coding-everyday.blogspot.com.br/2012/10/step-by-step-creating-html5-image.html">Creating a HTML5 puzzle game &raquo;</a></p>
+              <p>Check out the tutorial: Step-by-step creating a HTML5 Video Puzzle game</p>
+              <p><a class="btn btn-large btn-primary" href="http://coding-everyday.blogspot.com.br/2012/10/step-by-step-creating-html5-image.html">Step-by-step creating a HTML5 Video Puzzle game &raquo;</a></p>
             </div><!--/span-->
           </div><!--/row-->
           
@@ -242,51 +271,11 @@
     </div><!--/.fluid-container-->
 
     
-    <!-- Game canvas -->
-    <div id="game">
-      <div id="controls" style="display:none"><!-- <input type="button" id="play" value="PLAY" /> --></div>
-      <canvas id="canvas" style="display:none"></canvas>
-    </div>
-    <div id="vid" style="display: none;"></div>
-    <!-- DEBUG -->
-    <div id="debug" style="display:none">
-      <div>
-        pieces: <input type="text" name="p" id="p" />
-        pieces placed: <input type="text" name="pp" id="pp" />
-        lines: <input type="text" name="l" id="l" />
-        Pieces width: <input type="text" name="pw" id="pw" />
-        Pieces height: <input type="text" name="ph" id="ph" />
-      </div>
-      <div>
-        moving: <input type="text" name="moving" id="moving" />
-        over: <input type="text" name="over" id="over" />
-        selected: <input type="text" name="selected" id="selected" />
-      </div>
-      <div>
-        x: <input type="text" name="mx" id="mx" />
-        y: <input type="text" name="my" id="my" />
-      </div>
-      <div>
-        p1 x: <input type="text" name="px" id="px" />
-        p1 y: <input type="text" name="py" id="py" />
-      </div>
-      <div>
-        h1 x: <input type="text" name="hx" id="hx" />
-        h1 y: <input type="text" name="hy" id="hy" />
-      </div>
-      <div>
-        h2 x: <input type="text" name="hx2" id="hx2" />
-        h2 y: <input type="text" name="hy2" id="hy2" />
-      </div>
-    </div>
-    <!-- /DEBUG -->
-
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
 
 <script src="js/libs/bootstrap/bootstrap.min.js"></script>
 
-<script src="js/script.js"></script>
 <script>
   var _gaq=[['_setAccount','UA-31479393-1'],['_trackPageview']];
   (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
@@ -295,12 +284,141 @@
 </script>
 
 <!-- Game scripts -->
-<script src="./js/mouse.js"></script>
-<script src="./js/point2D.js"></script>
-<script src="./js/piece.js"></script>
-<script src="./js/holder.js"></script>
-<script src="./js/game.js?a=2"></script>
-<script src="./js/init.js?a=2"></script>
+<script>
+$(function() {
 
+  //alert(unescape(unescape("codecs%253D%2522avc1.42001E%252C%2Bmp4a.40.2%2522%26fallback_host%3Dtc.v")));
+  
+  var id = "b4VsluhWVh8";
+  id = "5KlnlCq2M5Q";
+  
+  $.ajax({
+    url: "http://www.youtube.com/get_video_info?video_id="+id,
+    dataType: "text"
+  }).done(function(data) {
+    
+    var results = [];
+    var r = 0;
+    
+    data = (data+'').replace(/\+/g, '%20');
+    data = data.replace(/url%3D/g, '\n\r\n\r<break>');
+    data = data.replace(/sig%3D/g, 'signature%3D');
+    //console.log(data);
+
+    var urls = data.split('<break>');
+    for(var u = 0; u < urls.length; u++){
+      var result = {};
+      
+      var d = unescape(unescape(decodeURIComponent((urls[u]+'').replace(/\+/g, '%20'))));
+      d = d.replace(/="/g, '%3D%22');
+      d = d.replace(/"/g, '%22');
+      var url = d;
+
+      console.log(d);
+      console.log(d.length);
+      
+      if(d.length > 1500){
+        aux = d.split('&has_cc');
+        d = aux[0];
+      }
+      
+      var vars = [], hash;
+      var hashes = d.slice(d.indexOf('?') + 1).split('&');
+      for(var i = 0; i < hashes.length; i++){
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = unescape(hash[1]);
+      }
+      
+      if(vars['type']!=undefined){
+        console.log(vars['type']);
+        result.type = vars['type'];
+        if(vars['type'].indexOf("codecs")>0){
+          var cs = vars['type'].split(';+codecs="');
+          console.log(cs[0]);
+          console.log(cs[1].replace('"','').replace('+',' '));
+          result.type = cs[0];
+          result.codecs = cs[1].replace('"','').replace('+',' ');
+        }
+      }else
+        console.log(vars['type']);
+        
+      //quality
+      if(vars['quality']!=undefined){
+        result.quality = vars['quality'];
+        if(vars['quality'].indexOf(",")>0){
+          var cs = vars['quality'].split(',');
+          console.log(cs[0]);
+          result.quality = cs[0];
+        }else
+          console.log(vars['quality']);
+      }
+      
+      if(result.type && result.quality){
+        result.url = url;
+        results[r] = result;
+        r++;
+      }
+      
+      //console.log(vars);
+      //src = vars["url_encoded_fmt_stream_map"];
+
+    }
+    //console.log(vars);
+    //var src = vars["url_encoded_fmt_stream_map"];
+
+    /*
+    //data = data.replace('url%3D', '');
+    //data = data.replace('itag%3D44', '');
+    data = decodeURIComponent((data+'').replace(/\+/g, '%20'));
+    
+    data = data.replace('url%3D', '');
+    data = data.replace('itag%3D44', '');
+    console.log(data);
+
+    console.log('Video src: '+src);
+    
+    if(typeof(src) == "undefined"){
+      if(Modernizr.video.ogg)
+        src = "video/BigBuckBunny_640x360.ogv";
+      else if(Modernizr.video.h264)
+        src = "video/BigBuckBunny_640x360.mp4";
+    }else if(!Modernizr.video.ogg && Modernizr.video.h264){
+      src = "video/BigBuckBunny_640x360.mp4";
+    }
+    
+    */
+
+    /*
+    if(Modernizr.video.ogg)
+      src = "video/BigBuckBunny_640x360.ogv";
+    else if(Modernizr.video.h264)
+      src = "video/BigBuckBunny_640x360.mp4";
+    else if(!Modernizr.video.ogg && Modernizr.video.h264)
+      src = "video/BigBuckBunny_640x360.mp4";
+    */
+
+    console.log(results);
+    
+    //console.log('Video src: '+src);
+    
+    var html = "";
+    html += '<ul>'
+    $.each(results, function(index, value) {
+      html += '<li>';
+      html += '<a href="'+value.url+'">';
+      html += 'Type: '+value.type+'<br />';
+      if(value.codecs!=undefined)
+        html += 'Codecs: '+value.codecs+'<br />';
+      html += 'Quality: '+value.quality;
+      html += '</a>';
+      html += '</li>';
+    });
+    html += '</ul>';
+    $('#promo').html(html);
+    
+  });
+});
+</script>
 </body>
 </html>
